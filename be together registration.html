@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be Together – تسجيل الفعاليات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #042B3F;
+      --blue:   #628EB2;
+      --brown:  #4F310E;
+      --beige:  #BD806E;
+      --cream:  #F5F0EB;
+      --white:  #FFFFFF;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* ── Puzzle decoration ── */
+    .puzzle-row {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+    .puzzle-piece {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+    }
+    .p1 { background: var(--beige); }
+    .p2 { background: var(--navy); }
+    .p3 { background: var(--brown); }
+    .p4 { background: var(--blue); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 40px rgba(4,43,63,0.10);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* top stripe */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--beige), var(--navy), var(--brown), var(--blue));
+    }
+
+    /* ── Logo / Brand ── */
+    .brand {
+      text-align: center;
+      margin-bottom: 0.4rem;
+    }
+    .brand-logo {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1;
+    }
+    .brand-logo .be-to {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -1px;
+    }
+    .brand-logo .ge-ther {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -1px;
+    }
+    .brand-logo .dot {
+      color: var(--beige);
+    }
+    .brand-sub {
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--blue);
+      font-weight: 400;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: var(--beige);
+      margin: 1rem auto 1.4rem;
+      border-radius: 2px;
+    }
+
+    /* ── Heading ── */
+    .form-title {
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+    .form-subtitle {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--blue);
+      font-weight: 400;
+      margin-bottom: 1.8rem;
+    }
+
+    /* ── Fields ── */
+    .field {
+      margin-bottom: 1.1rem;
+    }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    label span.req {
+      color: var(--beige);
+      margin-right: 2px;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid #e0d9d3;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.9rem;
+      color: var(--navy);
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      direction: rtl;
+    }
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(98,142,178,0.15);
+      background: #fff;
+    }
+    input::placeholder {
+      color: #b0a89f;
+      font-weight: 300;
+    }
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23042B3F' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 1rem center;
+    }
+
+    /* Event type cards */
+    .event-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .event-card {
+      border: 2px solid #e0d9d3;
+      border-radius: 12px;
+      padding: 0.9rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--cream);
+      position: relative;
+    }
+    .event-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .event-card .icon {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+    .event-card .label-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--navy);
+      display: block;
+    }
+    .event-card .label-sub {
+      font-size: 0.68rem;
+      color: var(--blue);
+      display: block;
+      margin-top: 2px;
+    }
+    .event-card:hover {
+      border-color: var(--blue);
+      background: #fff;
+    }
+    .event-card.selected {
+      border-color: var(--navy);
+      background: var(--navy);
+    }
+    .event-card.selected .label-text,
+    .event-card.selected .label-sub {
+      color: var(--white);
+    }
+
+    /* ── Submit ── */
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.5px;
+    }
+    button[type="submit"]:hover { background: #063a55; }
+    button[type="submit"]:active { transform: scale(0.98); }
+    button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ── Success ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+    }
+    .success-icon svg { width: 30px; height: 30px; }
+    .success-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+    .success-sub {
+      font-size: 0.82rem;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    .success-detail {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: right;
+      font-size: 0.82rem;
+      color: var(--navy);
+      line-height: 2;
+    }
+    .success-detail strong { color: var(--beige); }
+
+    /* ── Error ── */
+    .error-msg {
+      display: none;
+      background: #fff0ed;
+      border: 1px solid #f5a99a;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: #c0392b;
+      margin-top: 0.8rem;
+      text-align: center;
+    }
+
+    /* ── Footer ── */
+    .card-footer {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #b0a89f;
+      margin-top: 1.2rem;
+    }
+
+    @media (max-width: 420px) {
+      .card { padding: 2rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Puzzle dots -->
+  <div class="puzzle-row">
+    <div class="puzzle-piece p1"></div>
+    <div class="puzzle-piece p2"></div>
+    <div class="puzzle-piece p3"></div>
+    <div class="puzzle-piece p4"></div>
+  </div>
+
+  <div class="card">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-logo">
+        <span class="be-to">BE TO</span>
+        <span class="ge-ther">GETHER<span class="dot">.</span></span>
+      </div>
+      <div class="brand-sub">COFFEE &nbsp;&nbsp;&nbsp; HOUSE</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Form -->
+    <div id="formSection">
+      <p class="form-title">سجّل في فعاليتنا</p>
+      <p class="form-subtitle">أجمل اللحظات تبدأ بفنجان قهوة ومشاركة صادقة</p>
+
+      <div class="field">
+        <label for="fullName"><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" id="fullName" placeholder="اكتب اسمك الكامل" required />
+      </div>
+
+      <div class="field">
+        <label for="phone"><span class="req">*</span> رقم الجوال</label>
+        <input type="tel" id="phone" placeholder="05XXXXXXXX" required />
+      </div>
+
+      <div class="field">
+        <label><span class="req">*</span> نوع الفعالية</label>
+        <div class="event-cards">
+          <label class="event-card" id="card-workshop">
+            <input type="radio" name="eventType" value="ورشة عمل" />
+            <div class="icon">🛠️</div>
+            <span class="label-text">ورشة عمل</span>
+            <span class="label-sub">Workshop</span>
+          </label>
+          <label class="event-card" id="card-competition">
+            <input type="radio" name="eventType" value="مسابقة" />
+            <div class="icon">🏆</div>
+            <span class="label-text">مسابقة</span>
+            <span class="label-sub">Competition</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" onclick="submitForm()">تسجيل الآن</button>
+      <div class="error-msg" id="errorMsg">حدث خطأ، تحقق من اتصالك وحاول مرة ثانية.</div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-screen" id="successSection">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <p class="success-title">تم التسجيل! ☕</p>
+      <p class="success-sub">شكراً لك، سنتواصل معك قريباً<br>نتطلع نشاركك اللحظة</p>
+      <div class="success-detail" id="successDetail"></div>
+    </div>
+
+    <p class="card-footer">Be Together Coffee House &nbsp;·&nbsp; جميع الحقوق محفوظة</p>
+  </div>
+
+  <script>
+    // ─────────────────────────────────────────────
+    // ⚙️  ضع هنا رابط الـ Apps Script بعد الإعداد
+    // ─────────────────────────────────────────────
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwXZhz0IAVLTzIHFxjYCrlATzigk4Y0OF-8_zVwQKS6OBr2AalJeuqbsovgZX2bPzvqg/exec";
+
+    // Event card selection highlight
+    document.querySelectorAll('input[name="eventType"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.event-card').forEach(c => c.classList.remove('selected'));
+        radio.closest('.event-card').classList.add('selected');
+      });
+    });
+
+    async function submitForm() {
+      const btn = document.getElementById('submitBtn');
+      const errEl = document.getElementById('errorMsg');
+      errEl.style.display = 'none';
+
+      const name  = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const typeEl = document.querySelector('input[name="eventType"]:checked');
+
+      // Validation
+      if (!name) { showError('الرجاء إدخال الاسم الكامل'); return; }
+      if (!phone || !/^05\d{8}$/.test(phone)) { showError('الرجاء إدخال رقم جوال صحيح (05XXXXXXXX)'); return; }
+      if (!typeEl) { showError('الرجاء اختيار نوع الفعالية'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'جاري التسجيل...';
+
+      const payload = {
+        name,
+        phone,
+        eventType: typeEl.value,
+        timestamp: new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' })
+      };
+
+      // ─── Check if URL is configured ───
+      if (APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
+        // Demo mode: just show success without sending
+        showSuccess(payload);
+        return;
+      }
+
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        showSuccess(payload);
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'تسجيل الآن';
+        showError('حدث خطأ، تحقق من اتصالك وحاول مرة ثانية.');
+      }
+    }
+
+    function showSuccess(data) {
+      document.getElementById('formSection').style.display = 'none';
+      const s = document.getElementById('successSection');
+      s.style.display = 'block';
+      document.getElementById('successDetail').innerHTML =
+        `<strong>الاسم:</strong> ${data.name}<br>
+         <strong>الجوال:</strong> ${data.phone}<br>
+         <strong>الفعالية:</strong> ${data.eventType}<br>
+         <strong>وقت التسجيل:</strong> ${data.timestamp}`;
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
